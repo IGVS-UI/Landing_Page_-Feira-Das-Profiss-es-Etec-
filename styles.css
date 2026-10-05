@@ -60,9 +60,22 @@ body {
   margin-bottom: 1.6em;
 }
 
-/* Botão + ilustração */
-.hero { position: relative; margin: 24px -24px 0; }
-.hero__img { display: block; width: 100%; height: auto; }
+/* Botão + ilustração (rodapé de ponta a ponta) */
+.content { padding-bottom: 0; }
+
+.hero {
+  position: relative;
+  width: 100vw;
+  margin: 24px calc(50% - 50vw) 0;   /* sai do container e ocupa a tela toda */
+  line-height: 0;
+}
+.hero__img {
+  display: block;
+  width: 100%;
+  height: clamp(320px, 42vw, 820px);
+  object-fit: cover;                  /* preenche sem deformar */
+  object-position: center bottom;     /* mantém as pessoas visíveis */
+}
 
 .btn {
   position: absolute;
@@ -71,6 +84,7 @@ body {
   right: 24px;
   width: 52%;
   min-width: 220px;
+  max-width: 420px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -81,6 +95,7 @@ body {
   border-radius: 999px;
   font-weight: 600;
   font-size: clamp(.7rem, 2.3vw, .95rem);
+  line-height: 1.4;
   text-transform: uppercase;
   text-decoration: none;
   transition: transform .15s, filter .15s;
@@ -89,7 +104,7 @@ body {
 .btn:hover { filter: brightness(1.05); transform: translateY(-2px); }
 .btn:focus-visible { outline: 3px solid var(--purple-dark); outline-offset: 3px; }
 
+/* Desktop: botão alinhado à coluna de texto (720px) */
 @media (min-width: 720px) {
-  .hero { margin: 24px 0 0; }
-  .btn { right: 0; }
+  .btn { right: calc(50% - 360px + 24px); }
 }
