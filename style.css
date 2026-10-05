@@ -1,0 +1,110 @@
+:root {
+  --purple-light: #9b67ad;
+  --purple-dark: #6b4f7d;
+  --yellow: #fdbb4f;
+  --yellow-icon: #f2a93b;
+  --bg-result: #fbf8fc;
+  --text: #6b4f7d;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: "Poppins", system-ui, sans-serif;
+  color: var(--text);
+  background: #fff;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+.container {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Header */
+.header { background: #fff; padding: 28px 0 24px; }
+.header__inner { display: flex; align-items: center; gap: 16px; }
+.header__icon { width: 28px; height: 38px; color: var(--yellow-icon); flex: none; }
+.header__title {
+  font-size: clamp(1.5rem, 5vw, 2.2rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--purple-light);
+  line-height: 1;
+}
+
+/* Resultado */
+.result { background: var(--bg-result); padding: 48px 0 44px; }
+.result__label {
+  font-size: clamp(1.05rem, 3.6vw, 1.6rem);
+  font-weight: 600;
+  color: var(--purple-dark);
+  margin-bottom: 8px;
+}
+.result__area {
+  font-size: clamp(1.8rem, 7.4vw, 3.4rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 1.1;
+  color: var(--purple-dark);
+}
+
+/* Texto */
+.content { padding-top: 48px; }
+.text p {
+  font-size: clamp(.9rem, 2.6vw, 1.05rem);
+  text-align: justify;
+  margin-bottom: 1.6em;
+}
+
+/* Botão + ilustração (rodapé de ponta a ponta) */
+.content { padding-bottom: 0; }
+
+.hero {
+  position: relative;
+  width: 100vw;
+  margin: 24px calc(50% - 50vw) 0;   /* sai do container e ocupa a tela toda */
+  line-height: 0;
+}
+.hero__img {
+  display: block;
+  width: 100%;
+  height: clamp(320px, 42vw, 820px);
+  object-fit: cover;                  /* preenche sem deformar */
+  object-position: center bottom;     /* mantém as pessoas visíveis */
+}
+
+.btn {
+  position: absolute;
+  z-index: 1;
+  top: 6%;
+  right: 24px;
+  width: 52%;
+  min-width: 220px;
+  max-width: 420px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 14px 18px;
+  background: var(--yellow);
+  color: #fff;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: clamp(.7rem, 2.3vw, .95rem);
+  line-height: 1.4;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: transform .15s, filter .15s;
+}
+.btn svg { width: 26px; height: 12px; flex: none; }
+.btn:hover { filter: brightness(1.05); transform: translateY(-2px); }
+.btn:focus-visible { outline: 3px solid var(--purple-dark); outline-offset: 3px; }
+
+/* Desktop: botão alinhado à coluna de texto (720px) */
+@media (min-width: 720px) {
+  .btn { right: calc(50% - 360px + 24px); }
+}
