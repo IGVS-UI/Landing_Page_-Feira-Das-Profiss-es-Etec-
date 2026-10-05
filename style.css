@@ -1,0 +1,214 @@
+/* Reset Básico */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #ffffff;
+  color: #6a4a7d;
+  display: flex;
+  justify-content: center;
+  padding: 30px 15px;
+}
+
+.container {
+  width: 100%;
+  max-width: 650px;
+}
+
+/* Cabeçalho */
+.header {
+  text-align: left;
+  margin-bottom: 25px;
+}
+
+.logo-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.icon-interrogacao {
+  width: 30px;
+  height: auto;
+  
+}
+
+.logo-title h1 {
+  font-size: 22px;
+  font-weight: 800;
+  color: #8c68a6;
+  letter-spacing: 0.5px;
+}
+
+.header h2 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #6a4a7d;
+}
+
+/* Barra de Progresso */
+.progress-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 35px;
+}
+
+.progress-bar-bg {
+  flex: 1;
+  height: 8px;
+  background-color: #f1ebd8;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background-color: #7b588e;
+  border-radius: 10px;
+}
+
+.progress-text {
+  font-size: 14px;
+  font-weight: 700;
+  color: #6a4a7d;
+}
+
+/* Lista de Perguntas */
+.questions-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.question-item {
+  padding: 20px 0;
+  border-bottom: 1.5px solid #e7dfec;
+}
+
+.question-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #5d426d;
+  margin-bottom: 15px;
+}
+
+/* Escala de Seleção */
+.scale-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.label {
+  font-size: 40px;
+  font-weight: 700;
+}
+
+.label.concordar {
+  color: #ffbe4f;
+  margin-right: 10px;
+}
+
+.label.discordar {
+  color: #6a4a7d;
+  margin-left: 10px;
+}
+
+.options {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+/* Estilização dos Círculos Radio */
+.circle-option {
+  position: relative;
+  cursor: pointer;
+  display: inline-block;
+}
+
+.circle-option input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.circle-option span {
+  display: block;
+  border-radius: 50%;
+  background-color: transparent;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Tamanhos dos Círculos */
+.lg span { width: 44px; height: 44px; border-width: 2.5px; }
+.md span { width: 34px; height: 34px; border-width: 2.5px; }
+.sm span { width: 26px; height: 26px; border-width: 2px; }
+.xs span { width: 18px; height: 18px; border-width: 2px; }
+
+/* Cores das Bordas */
+.yellow span { border: 2.5px solid #ffc256; }
+.purple span { border: 2.5px solid #6a4a7d; }
+.neutral span { border: 2px solid #b8b1c0; }
+
+/* Efeito ao Selecionar (Checked) */
+.circle-option input:checked + span {
+  transform: scale(0.92);
+}
+
+.yellow input:checked + span {
+  background-color: #ffc256;
+}
+
+.purple input:checked + span {
+  background-color: #6a4a7d;
+}
+
+.neutral input:checked + span {
+  background-color: #b8b1c0;
+}
+
+/* Botões do Rodapé */
+.footer-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 35px;
+}
+
+.btn {
+  border: none;
+  border-radius: 20px;
+  padding: 10px 24px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  color: #ffffff;
+  background-color: #ffbe4f;
+  transition: opacity 0.2s ease;
+}
+
+.btn:hover {
+  opacity: 0.9;
+}
+/* Acréscimos */
+.label { font-size: 13px; }            /* 40px quebrava o layout da escala */
+.btn { text-decoration: none; display: inline-block; }
+.btn:focus-visible { outline: 3px solid #6a4a7d; outline-offset: 3px; }
+.circle-option input:focus-visible + span { outline: 3px solid #6a4a7d; outline-offset: 3px; }
+.aviso { color: #c0392b; font-size: 13px; font-weight: 600; margin-top: 15px; min-height: 1.2em; }
+.intro { font-size: 14px; line-height: 1.7; text-align: justify; }
+.footer-start { justify-content: flex-end; }
+@media (max-width: 520px) {
+  .scale-container { flex-wrap: wrap; justify-content: space-between; gap: 10px; }
+  .options { order: 2; width: 100%; gap: 8px; }
+  .lg span { width: 38px; height: 38px; }
+  .md span { width: 30px; height: 30px; }
+  .sm span { width: 24px; height: 24px; }
+}

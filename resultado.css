@@ -108,3 +108,9 @@ body {
 @media (min-width: 720px) {
   .btn { right: calc(50% - 360px + 24px); }
 }
+
+.result__others {
+  margin-top: 16px;
+  font-size: clamp(.85rem, 2.6vw, 1rem);
+  color: var(--purple-dark);
+}

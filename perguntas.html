@@ -18,12 +18,23 @@
       </div>
       <h2>Descubra a área de atuação que mais combina com você</h2>
     </header>
-    <p class="intro">Você já se perguntou: “Qual profissão combina comigo?” São 70 afirmações. Para cada uma, indique o quanto você concorda ou discorda, de “Concordo” a “Discordo”. Não há respostas certas ou erradas.</p>
-    <footer class="footer-buttons footer-start">
-      <a class="btn btn-proximo" href="perguntas.html" id="comecar">COMEÇAR &rarr;</a>
+
+    <div class="progress-section">
+      <div class="progress-bar-bg"><div class="progress-bar-fill" id="barra" style="width: 0%;"></div></div>
+      <span class="progress-text" id="progresso">0%</span>
+    </div>
+
+    <main class="questions-list" id="lista"></main>
+    <p class="aviso" id="aviso" role="alert"></p>
+
+    <footer class="footer-buttons">
+      <button class="btn btn-voltar" id="voltar">&larr; VOLTAR</button>
+      <button class="btn btn-proximo" id="proximo">PRÓXIMO &rarr;</button>
     </footer>
   </div>
+
+  <script src="quiz-data.js"></script>
   <script src="quiz.js"></script>
-  <script>document.getElementById('comecar').addEventListener('click', reiniciarTeste);</script>
+  <script>iniciarPerguntas();</script>
 </body>
 </html>
