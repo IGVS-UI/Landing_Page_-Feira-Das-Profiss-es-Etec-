@@ -171,8 +171,11 @@ function mostrarFalha(motivo, erro) {
 
 function iniciarPerguntas() {
   console.info('[Teste vocacional] versão', VERSAO_TESTE);
-  if (typeof GERAIS === 'undefined' || typeof AREAS === 'undefined') {
-    mostrarFalha('arquivos de perguntas não carregados');
+  const faltando = [];
+  if (typeof AREAS === 'undefined') faltando.push('quiz-data.js');
+  if (typeof GERAIS === 'undefined') faltando.push('quiz-rapido-data.js');
+  if (faltando.length) {
+    mostrarFalha('arquivo não carregado: ' + faltando.join(', ') + '. Confira se ele está na mesma pasta do perguntas.html e se a página tem a tag <script> dele');
     return;
   }
   const modo = modoAtual();
