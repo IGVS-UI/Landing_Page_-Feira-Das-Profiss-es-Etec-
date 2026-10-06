@@ -154,7 +154,27 @@ function modoAtual() {
 }
 
 // ---------- página de perguntas ----------
+const VERSAO_TESTE = 4; // aparece no console; ajuda a conferir se o navegador carregou os arquivos novos
+
+function mostrarFalha(motivo, erro) {
+  if (erro) console.error('[Teste vocacional v' + VERSAO_TESTE + ']', motivo, erro);
+  const aviso = document.getElementById('aviso');
+  if (!aviso) return;
+  aviso.innerHTML = '';
+  aviso.append('Algo deu errado (' + motivo + '). Atualize a página com Ctrl+F5 (ou limpe o cache do navegador) e ');
+  const a = document.createElement('a');
+  a.href = 'index.html';
+  a.textContent = 'recomece o teste';
+  a.addEventListener('click', reiniciarTeste);
+  aviso.append(a, '.');
+}
+
 function iniciarPerguntas() {
+  console.info('[Teste vocacional] versão', VERSAO_TESTE);
+  if (typeof GERAIS === 'undefined' || typeof AREAS === 'undefined') {
+    mostrarFalha('arquivos de perguntas não carregados');
+    return;
+  }
   const modo = modoAtual();
   const rapido = modo === 'rapido';
   const respostas = lerJSON('respostas', {});
@@ -242,6 +262,10 @@ function iniciarPerguntas() {
   });
 
   proximo.addEventListener('click', () => {
+    try { avancar(); } catch (e) { mostrarFalha('não foi possível avançar', e); }
+  });
+
+  function avancar() {
     if (idsDaPagina().some((id) => respostas[id] === undefined)) {
       aviso.textContent = 'Responda todas as perguntas para continuar.';
       return;
@@ -262,9 +286,9 @@ function iniciarPerguntas() {
       }
     }
     pagina++; render();
-  });
+  }
 
-  render();
+  try { render(); } catch (e) { mostrarFalha('não foi possível carregar as perguntas', e); }
 }
 
 function reiniciarTeste() {
