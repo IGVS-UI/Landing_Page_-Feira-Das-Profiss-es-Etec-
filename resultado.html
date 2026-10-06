@@ -30,6 +30,14 @@
   </section>
 
   <main class="container content">
+    <section class="etecs" id="etecs" hidden>
+      <h3 class="etecs__title">Cursos técnicos nas Etecs</h3>
+      <label class="etecs__filter">Cidade
+        <select id="filtro-cidade"><option value="">Todas</option></select>
+      </label>
+      <div id="etecs-lista"></div>
+    </section>
+
     <article class="text">
       <p>Você já se perguntou: “Qual profissão combina comigo?”</p>
       <p>É justamente aí que entra o teste vocacional. Ele é uma ferramenta que ajuda a identificar nossos interesses, habilidades, características e áreas com as quais mais nos identificamos. A partir dos resultados, podemos conhecer possibilidades de profissões e cursos que talvez tenham mais a ver com quem somos e com aquilo que gostamos de fazer.</p>
@@ -47,6 +55,7 @@
     </div>
   </main>
   <script src="quiz-data.js"></script>
+  <script src="etecs-data.js"></script>
   <script src="resultado.js"></script>
 </body>
 </html>
