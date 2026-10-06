@@ -4,58 +4,78 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Teste Vocacional – Resultado</title>
-  <meta name="description" content="Resultado do teste vocacional: a área de atuação mais compatível com você é Educação e Licenciaturas.">
+  <meta name="description" content="Resultado do teste vocacional: sua área de afinidade, possibilidades de atuação e ETECs onde estudar.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="resultado.css">
 </head>
 <body>
-  <header class="header">
-    <div class="container header__inner">
-      <svg class="header__icon" viewBox="0 0 48 64" aria-hidden="true">
-        <path d="M10 20c0-8 6-14 15-14s14 5 14 12c0 6-4 9-8 12-3 2-5 4-5 8v2" fill="none" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
-        <circle cx="26" cy="56" r="5.5" fill="currentColor"/>
-      </svg>
-      <h1 class="header__title">Teste Vocacional</h1>
-    </div>
+  <header class="topo">
+    <img class="topo__icone" src="img/interrogacao.svg" alt="">
+    <h1 class="topo__marca">TESTE VOCACIONAL</h1>
   </header>
 
-  <section class="result">
-    <div class="container">
-      <p class="result__label">A área de atuação mais compatível com você é:</p>
-      <h2 class="result__area" id="area">&nbsp;</h2>
-      <p class="result__others" id="outras" hidden></p>
-    </div>
-  </section>
-
-  <main class="container content">
-    <section class="etecs" id="etecs" hidden>
-      <h3 class="etecs__title">Cursos técnicos nas Etecs</h3>
-      <label class="etecs__filter">Cidade
-        <select id="filtro-cidade"><option value="">Todas</option></select>
-      </label>
-      <div id="etecs-lista"></div>
+  <main id="principal">
+    <!-- Resultado ausente ou inválido -->
+    <section class="erro" id="erro" hidden>
+      <h2>Não encontramos o seu resultado</h2>
+      <p>Para ver a sua área de afinidade, responda ao teste vocacional até o final.</p>
+      <a class="btn" href="index.html">Fazer o teste</a>
     </section>
 
-    <article class="text">
-      <p>Você já se perguntou: “Qual profissão combina comigo?”</p>
-      <p>É justamente aí que entra o teste vocacional. Ele é uma ferramenta que ajuda a identificar nossos interesses, habilidades, características e áreas com as quais mais nos identificamos. A partir dos resultados, podemos conhecer possibilidades de profissões e cursos que talvez tenham mais a ver com quem somos e com aquilo que gostamos de fazer.</p>
-      <p>Você já se perguntou: “Qual profissão combina comigo?”</p>
-      <p>É justamente aí que entra o teste vocacional. Ele é uma ferramenta que ajuda a identificar nossos interesses, habilidades, características e áreas com as quais mais nos identificamos. A partir dos resultados, podemos conhecer possibilidades de profissões e cursos que talvez tenham mais a ver com quem somos e com aquilo que gostamos de fazer.</p>
-    </article>
+    <div id="resultado" hidden>
+      <section class="faixa" aria-labelledby="area-nome">
+        <p class="faixa__label" id="area-rotulo">A área de atuação mais compatível com você é:</p>
+        <h2 class="faixa__area" id="area-nome"></h2>
+        <nav class="outras" id="outras" aria-label="Outras áreas com afinidade" hidden>
+          <span class="outras__titulo">Áreas com mais afinidade:</span>
+          <ul class="outras__lista" id="outras-lista"></ul>
+        </nav>
+      </section>
 
-    <div class="hero">
-      <a class="btn" href="index.html" id="voltar-inicio">
-        <svg viewBox="0 0 40 16" aria-hidden="true"><path d="M39 8H3M10 1 2 8l8 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Voltar para a página inicial
-      </a>
+      <div class="conteudo">
+        <section class="bloco">
+          <h3>Do que se trata esse curso?</h3>
+          <p id="explicacao"></p>
+        </section>
+      </div>
 
-      <img class="hero__img" id="ilustracao" src="img/Professora e aluna colorindo juntas.png" alt="">
+      <figure class="imagem" id="imagem">
+        <img id="imagem-img" alt="" width="256" height="256">
+      </figure>
+
+      <div class="conteudo">
+        <section class="bloco">
+          <h3>Áreas de Atuação:</h3>
+          <ul class="atuacao" id="atuacao"></ul>
+        </section>
+
+        <section class="bloco">
+          <h3>Faixa Salarial:</h3>
+          <ul class="salario" id="salario"></ul>
+          <p class="nota" id="aviso-salario"></p>
+        </section>
+
+        <section class="bloco" aria-labelledby="etecs-titulo">
+          <h3 id="etecs-titulo">ETECS disponíveis: <span class="etecs__qtd" id="etecs-qtd"></span></h3>
+          <p class="aviso aviso--destaque" id="aviso-sem-exato" hidden></p>
+          <p class="nota" id="nota-tipo"></p>
+          <ol class="etecs" id="etecs"></ol>
+          <p class="obs" id="observacao"></p>
+          <ul class="notas" id="notas"></ul>
+        </section>
+
+        <nav class="botoes" aria-label="Próximos passos">
+          <a class="btn" href="https://vestibulinho.etec.sp.gov.br" target="_blank" rel="noopener">Faça a sua inscrição</a>
+          <a class="btn btn--secundario" id="voltar-inicio" href="index.html"><span aria-hidden="true">←</span> Voltar para a página inicial</a>
+        </nav>
+      </div>
     </div>
   </main>
+
   <script src="quiz-data.js"></script>
-  <script src="etecs-data.js"></script>
+  <script src="areas-data.js"></script>
   <script src="resultado.js"></script>
 </body>
 </html>
