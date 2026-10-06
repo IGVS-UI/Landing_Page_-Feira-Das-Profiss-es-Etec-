@@ -22,10 +22,8 @@
       if (!Number.isInteger(r.pontos) || r.pontos < 5 || r.pontos > 35) return null; // 5 perguntas × 1–7
       vistos.add(r.id);
     }
-    // ordena por pontos; no empate vale a ordem já definida pelo teste (regra de desempate)
-    return dados.map((r, i) => ({ ...r, i }))
-      .sort((a, b) => b.pontos - a.pontos || a.i - b.i)
-      .slice(0, 3);
+    // a ordem já vem definida pelo teste (pontuação e desempate; no modo rápido, as áreas exploradas na etapa 2 vêm primeiro)
+    return dados.slice(0, 3);
   }
 
   function el(tag, cls, texto) {
@@ -154,7 +152,7 @@
   }
 
   $('voltar-inicio').addEventListener('click', () => {
-    ['ordem', 'respostas', 'pagina', 'resultado'].forEach((k) => sessionStorage.removeItem(k));
+    ['ordem', 'ordem1', 'fase2', 'respostas', 'pagina', 'resultado'].forEach((k) => sessionStorage.removeItem(k));
   });
 
   iniciar();

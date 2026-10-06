@@ -1,6 +1,6 @@
 # Teste Vocacional
 
-Site estático (HTML, CSS e JavaScript puros, sem build). Fluxo: `index.html` → `perguntas.html` → `resultado.html`.
+Site estático (HTML, CSS e JavaScript puros, sem build). Fluxo: `index.html` → `perguntas.html` → `resultado.html` (teste rápido de 20 perguntas ou completo de 70).
 
 ## Como executar
 ```bash
@@ -13,6 +13,7 @@ Use um servidor local (não abra o arquivo direto) para o resultado funcionar em
 | Arquivo | Função |
 |---|---|
 | `quiz-data.js` | 14 áreas e 70 perguntas (do Word da Mariana) |
+| `quiz-rapido-data.js` | 8 perguntas gerais do teste rápido (**rascunho, precisa de revisão da Mariana**) |
 | `quiz.js` | embaralha, pagina, guarda respostas e calcula o resultado |
 | `perguntas.html`, `style.css` | telas de perguntas e início |
 | `areas-data.js` | **gerado**: conteúdo das áreas e ETECs (da planilha) |
@@ -21,7 +22,13 @@ Use um servidor local (não abra o arquivo direto) para o resultado funcionar em
 | `tools/xlsx_para_areas.py` | gera `areas-data.js` e `img/areas/*.png` |
 | `img/areas/` | ícones das 14 áreas (extraídos da planilha) |
 
-## Regras do teste (Word)
+## Regras do teste
+**Teste rápido (padrão, 20 perguntas, adaptativo)**
+1. *Etapa 1:* 8 perguntas gerais (`quiz-rapido-data.js`), cada uma pontuando em 3 a 4 áreas; todas as 14 áreas aparecem em pelo menos 2.
+2. *Etapa 2:* as 3 áreas com maior média na etapa 1 (empate: mais respostas 6 ou 7; depois sorteio) recebem 4 perguntas específicas cada, tiradas das 70 do Word. As perguntas são intercaladas A-B-C-A-B-C (mesma área sempre a 3 posições). Voltar e mudar a etapa 1 refaz a etapa 2.
+3. *Pontuação:* média das respostas da área × 5, de 5 a 35 (igual ao modo completo). As 3 áreas exploradas na etapa 2 vêm primeiro, ordenadas pela pontuação final.
+
+**Teste completo (70 perguntas, `?modo=completo`)** — regras do Word:
 - 14 áreas × 5 perguntas; resposta de 1 (Discordo) a 7 (Concordo); cada área soma de 5 a 35 pontos.
 - Perguntas embaralhadas, sem numeração, com pelo menos 3 posições entre perguntas da mesma área.
 - O resultado mostra as 3 áreas com mais pontos; a 1ª é a principal.

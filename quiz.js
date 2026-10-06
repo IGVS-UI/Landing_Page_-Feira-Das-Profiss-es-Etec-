@@ -1,5 +1,8 @@
 // Lógica do teste: embaralha, pagina, guarda respostas e calcula o resultado.
-const POR_PAGINA = 5;
+const POR_PAGINA = 5;          // modo completo
+const POR_PAGINA_RAPIDO = 4;   // modo rápido: 2 páginas gerais + 3 específicas
+const N_CANDIDATAS = 3;
+const PERGUNTAS_POR_CANDIDATA = 4;
 const MIN_DISTANCIA = 3; // perguntas da mesma área ficam ao menos 3 posições distantes
 const STORE = sessionStorage;
 
@@ -81,12 +84,91 @@ function calcularResultado(respostas) {
     .sort((x, y) => y.pontos - x.pontos || altas[y.id] - altas[x.id] || sorteio[y.id] - sorteio[x.id]);
 }
 
+// ---------- teste rápido (adaptativo): 8 gerais + 12 específicas = 20 ----------
+function mediaGeral(respostas, areaId) {
+  const v = GERAIS.filter((g) => g.areas.includes(areaId) && respostas[g.id] !== undefined).map((g) => respostas[g.id]);
+  return v.length ? v.reduce((a, b) => a + b, 0) / v.length : 0;
+}
+
+function fortes(respostas, areaId) { // respostas 6 ou 7 (critério de desempate)
+  return GERAIS.filter((g) => g.areas.includes(areaId) && respostas[g.id] >= 6).length;
+}
+
+// As 3 áreas com maior média nas perguntas gerais (empate: mais respostas fortes; depois sorteio).
+function escolherCandidatas(respostas) {
+  const sorteio = {};
+  AREAS.forEach((a) => (sorteio[a.id] = Math.random()));
+  return AREAS.map((a) => a.id)
+    .sort((x, y) => mediaGeral(respostas, y) - mediaGeral(respostas, x) || fortes(respostas, y) - fortes(respostas, x) || sorteio[y] - sorteio[x])
+    .slice(0, N_CANDIDATAS);
+}
+
+// 4 perguntas específicas por candidata, intercaladas A B C A B C… (mesma área sempre a 3 posições).
+function gerarFase2(candidatas) {
+  const ordemAreas = embaralhar(candidatas);
+  const filas = {};
+  candidatas.forEach((id) => {
+    const area = AREAS.find((a) => a.id === id);
+    filas[id] = embaralhar(area.perguntas.map((_, i) => `${id}-${i}`)).slice(0, PERGUNTAS_POR_CANDIDATA);
+  });
+  const ordem = [];
+  for (let r = 0; r < PERGUNTAS_POR_CANDIDATA; r++) ordemAreas.forEach((id) => ordem.push(filas[id][r]));
+  return ordem;
+}
+
+function respostaFase1Chave(respostas) {
+  return JSON.stringify(GERAIS.map((g) => respostas[g.id] ?? null));
+}
+
+// Pontuação de 5 a 35 por área (média das respostas ×5), compatível com a página de resultado.
+// As candidatas vêm primeiro, ordenadas pela pontuação final; as demais, pela fase 1.
+function calcularResultadoRapido(respostas, candidatas) {
+  const sorteio = {};
+  AREAS.forEach((a) => (sorteio[a.id] = Math.random()));
+  const info = AREAS.map((a) => {
+    const v = GERAIS.filter((g) => g.areas.includes(a.id)).map((g) => respostas[g.id]);
+    let altas = v.filter((x) => x >= 6).length;
+    if (candidatas.includes(a.id)) {
+      a.perguntas.forEach((_, i) => {
+        const r = respostas[`${a.id}-${i}`];
+        if (r !== undefined) { v.push(r); if (r >= 6) altas++; }
+      });
+    }
+    const media = v.reduce((x, y) => x + y, 0) / v.length;
+    return { id: a.id, nome: a.nome, pontos: Math.min(35, Math.max(5, Math.round(media * 5))), altas, cand: candidatas.includes(a.id) };
+  });
+  return info
+    .sort((x, y) => Number(y.cand) - Number(x.cand) || y.pontos - x.pontos || y.altas - x.altas || sorteio[y.id] - sorteio[x.id])
+    .map(({ id, nome, pontos }) => ({ id, nome, pontos }));
+}
+
+function textoPergunta(id) {
+  const g = GERAIS.find((q) => q.id === id);
+  return g ? g.texto : perguntaPorId(id).texto;
+}
+
+function modoAtual() {
+  const url = new URLSearchParams(location.search).get('modo');
+  if (url === 'completo' || url === 'rapido') { STORE.setItem('modo', url); return url; }
+  return STORE.getItem('modo') === 'completo' ? 'completo' : 'rapido';
+}
+
 // ---------- página de perguntas ----------
 function iniciarPerguntas() {
-  const ordem = obterOrdem();
+  const modo = modoAtual();
+  const rapido = modo === 'rapido';
   const respostas = lerJSON('respostas', {});
-  const totalPaginas = Math.ceil(ordem.length / POR_PAGINA);
+  const porPagina = rapido ? POR_PAGINA_RAPIDO : POR_PAGINA;
+
+  // modo completo: 70 perguntas embaralhadas; rápido: fase 1 (gerais) e fase 2 (específicas, gerada depois)
+  let ordem1 = rapido ? lerJSON('ordem1', null) : obterOrdem();
+  if (rapido && (!ordem1 || ordem1.length !== GERAIS.length)) { ordem1 = embaralhar(GERAIS.map((g) => g.id)); gravarJSON('ordem1', ordem1); }
+  let fase2 = rapido ? lerJSON('fase2', null) : null; // { candidatas, ordem, chave }
+
+  const paginasFase1 = rapido ? Math.ceil(ordem1.length / porPagina) : 0;
+  const totalPaginas = rapido ? paginasFase1 + Math.ceil((N_CANDIDATAS * PERGUNTAS_POR_CANDIDATA) / porPagina) : Math.ceil(ordem1.length / porPagina);
   let pagina = Math.min(Number(STORE.getItem('pagina') || 0), totalPaginas - 1);
+  if (rapido && pagina >= paginasFase1 && !fase2) pagina = paginasFase1 - 1;
 
   const lista = document.getElementById('lista');
   const barra = document.getElementById('barra');
@@ -94,9 +176,20 @@ function iniciarPerguntas() {
   const aviso = document.getElementById('aviso');
   const voltar = document.getElementById('voltar');
   const proximo = document.getElementById('proximo');
+  const etapa = document.getElementById('etapa');
+
+  const idsDaPagina = () => {
+    if (!rapido) return ordem1.slice(pagina * porPagina, (pagina + 1) * porPagina);
+    return pagina < paginasFase1
+      ? ordem1.slice(pagina * porPagina, (pagina + 1) * porPagina)
+      : fase2.ordem.slice((pagina - paginasFase1) * porPagina, (pagina - paginasFase1 + 1) * porPagina);
+  };
+  const todasAsPerguntas = () => ordem1.concat(rapido && fase2 ? fase2.ordem : []);
+  const totalPerguntas = rapido ? GERAIS.length + N_CANDIDATAS * PERGUNTAS_POR_CANDIDATA : ordem1.length;
 
   function atualizarProgresso() {
-    const pct = Math.round((Object.keys(respostas).length / ordem.length) * 100);
+    const respondidas = todasAsPerguntas().filter((id) => respostas[id] !== undefined).length;
+    const pct = Math.round((respondidas / totalPerguntas) * 100);
     barra.style.width = pct + '%';
     texto.textContent = pct + '%';
   }
@@ -104,10 +197,13 @@ function iniciarPerguntas() {
   function render() {
     STORE.setItem('pagina', pagina);
     aviso.textContent = '';
-    const ids = ordem.slice(pagina * POR_PAGINA, (pagina + 1) * POR_PAGINA);
+    if (etapa) {
+      etapa.textContent = !rapido ? '' : pagina < paginasFase1
+        ? 'Etapa 1 de 2: perguntas gerais'
+        : 'Etapa 2 de 2: perguntas mais específicas para o seu perfil';
+    }
     lista.innerHTML = '';
-    ids.forEach((id) => {
-      const q = perguntaPorId(id);
+    idsDaPagina().forEach((id) => {
       const item = document.createElement('div');
       item.className = 'question-item';
       item.innerHTML = `<p class="question-title"></p>
@@ -116,7 +212,7 @@ function iniciarPerguntas() {
           <div class="options" role="radiogroup"></div>
           <span class="label discordar">Discordo</span>
         </div>`;
-      item.querySelector('.question-title').textContent = q.texto; // sem numeração, conforme pedido
+      item.querySelector('.question-title').textContent = textoPergunta(id); // sem numeração
       const opcoes = item.querySelector('.options');
       ESCALA.forEach((o) => {
         const lab = document.createElement('label');
@@ -146,15 +242,24 @@ function iniciarPerguntas() {
   });
 
   proximo.addEventListener('click', () => {
-    const ids = ordem.slice(pagina * POR_PAGINA, (pagina + 1) * POR_PAGINA);
-    if (ids.some((id) => respostas[id] === undefined)) {
+    if (idsDaPagina().some((id) => respostas[id] === undefined)) {
       aviso.textContent = 'Responda todas as perguntas para continuar.';
       return;
     }
     if (pagina === totalPaginas - 1) {
-      gravarJSON('resultado', calcularResultado(respostas));
+      const resultado = rapido ? calcularResultadoRapido(respostas, fase2.candidatas) : calcularResultado(respostas);
+      gravarJSON('resultado', resultado);
       location.href = 'resultado.html';
       return;
+    }
+    if (rapido && pagina === paginasFase1 - 1) {
+      // fim da fase 1: define (ou mantém, se as respostas não mudaram) as áreas da fase 2
+      const chave = respostaFase1Chave(respostas);
+      if (!fase2 || fase2.chave !== chave) {
+        const candidatas = escolherCandidatas(respostas);
+        fase2 = { candidatas, ordem: gerarFase2(candidatas), chave };
+        gravarJSON('fase2', fase2);
+      }
     }
     pagina++; render();
   });
@@ -163,5 +268,5 @@ function iniciarPerguntas() {
 }
 
 function reiniciarTeste() {
-  ['ordem', 'respostas', 'pagina', 'resultado'].forEach((k) => STORE.removeItem(k));
+  ['ordem', 'ordem1', 'fase2', 'respostas', 'pagina', 'resultado'].forEach((k) => STORE.removeItem(k));
 }

@@ -212,3 +212,7 @@ body {
   .md span { width: 30px; height: 30px; }
   .sm span { width: 24px; height: 24px; }
 }
+
+.etapa { font-size: 13px; font-weight: 600; color: #6a4a7d; margin: -20px 0 20px; min-height: 1.3em; }
+.outro-modo { margin-top: 18px; font-size: 13px; text-align: right; }
+.outro-modo a { color: #6a4a7d; }

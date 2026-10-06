@@ -18,12 +18,13 @@
       </div>
       <h2>Descubra a área de atuação que mais combina com você</h2>
     </header>
-    <p class="intro">Você já se perguntou: “Qual profissão combina comigo?” São 70 afirmações. Para cada uma, indique o quanto você concorda ou discorda, de “Concordo” a “Discordo”. Não há respostas certas ou erradas.</p>
+    <p class="intro">Você já se perguntou: “Qual profissão combina comigo?” O teste começa com perguntas gerais e, conforme você responde, fica mais específico para o seu perfil. São 20 afirmações: para cada uma, indique o quanto você concorda ou discorda, de “Concordo” a “Discordo”. Não há respostas certas ou erradas.</p>
     <footer class="footer-buttons footer-start">
-      <a class="btn btn-proximo" href="perguntas.html" id="comecar">COMEÇAR &rarr;</a>
+      <a class="btn btn-proximo" href="perguntas.html?modo=rapido" id="comecar">COMEÇAR &rarr;</a>
     </footer>
+    <p class="outro-modo"><a href="perguntas.html?modo=completo" id="completo">Prefiro o teste completo (70 perguntas)</a></p>
   </div>
   <script src="quiz.js"></script>
-  <script>document.getElementById('comecar').addEventListener('click', reiniciarTeste);</script>
+  <script>['comecar', 'completo'].forEach((id) => document.getElementById(id).addEventListener('click', reiniciarTeste));</script>
 </body>
 </html>
